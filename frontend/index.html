@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>POS - Frente de Caixa</title>
+  <meta name="description" content="Sistema de Ponto de Venda moderno para lojas de varejo.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles/style.css">
+</head>
+<body>
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <svg class="topbar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+      <h1>FRENTE DE CAIXA</h1>
+    </div>
+    <div class="topbar-right">
+      <span class="topbar-user" id="userName">Operador</span>
+      <span class="topbar-time" id="clock"></span>
+    </div>
+  </header>
+
+  <main class="pos-layout">
+    <!-- LEFT PANEL: Product Input -->
+    <section class="panel panel-left">
+      <h2 class="panel-title">Adicionar Produto</h2>
+
+      <div class="input-group">
+        <label for="productCode">Código do Produto</label>
+        <div class="input-row">
+          <input type="text" id="productCode" placeholder="Ex: 001" autocomplete="off">
+          <button class="btn btn-primary" id="btnAddByCode" title="Adicionar por código">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="18" height="18"><path d="M5 12h14M12 5v14"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label for="productSearch">Buscar Produto</label>
+        <div class="input-row">
+          <input type="text" id="productSearch" placeholder="Nome do produto..." autocomplete="off">
+          <button class="btn btn-secondary" id="btnSearch" title="Buscar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="18" height="18"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Search Results -->
+      <div class="search-results" id="searchResults"></div>
+
+      <div class="input-group">
+        <label for="addQty">Quantidade</label>
+        <input type="number" id="addQty" value="1" min="1" step="1">
+      </div>
+
+      <div class="shortcut-hint">
+        <kbd>Enter</kbd> para adicionar por código
+      </div>
+
+      <!-- Recent / quick access -->
+      <div class="quick-section">
+        <h3>Produtos Recentes</h3>
+        <div class="quick-grid" id="recentProducts">
+          <p class="empty-msg">Nenhum produto recente.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CENTER PANEL: Cart Table -->
+    <section class="panel panel-center">
+      <div class="panel-header-row">
+        <h2 class="panel-title">Itens da Venda</h2>
+        <span class="badge" id="cartCount">0 itens</span>
+      </div>
+
+      <div class="table-wrapper">
+        <table id="cartTable">
+          <thead>
+            <tr>
+              <th>Cód.</th>
+              <th>Produto</th>
+              <th>Qtd.</th>
+              <th>Preço Un.</th>
+              <th>Total</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="cartBody">
+            <!-- items rendered here -->
+          </tbody>
+        </table>
+        <div class="empty-cart" id="emptyCart">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="48" height="48"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>
+          <p>Carrinho vazio</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- RIGHT PANEL: Totals & Checkout -->
+    <section class="panel panel-right">
+      <div class="total-display">
+        <span class="total-label">TOTAL</span>
+        <span class="total-value" id="totalValue">R$ 0,00</span>
+      </div>
+
+      <div class="summary-rows">
+        <div class="summary-row">
+          <span>Subtotal</span>
+          <span id="subtotalValue">R$ 0,00</span>
+        </div>
+        <div class="summary-row">
+          <span>Desconto</span>
+          <span id="discountDisplay" class="discount-val">- R$ 0,00</span>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label for="discountInput">Desconto (R$)</label>
+        <input type="number" id="discountInput" placeholder="0,00" min="0" step="0.01" value="0">
+      </div>
+
+      <div class="input-group">
+        <label for="paymentMethod">Forma de Pagamento</label>
+        <select id="paymentMethod">
+          <option value="dinheiro">Dinheiro</option>
+          <option value="cartao_credito">Cartão de Crédito</option>
+          <option value="cartao_debito">Cartão de Débito</option>
+          <option value="pix">PIX</option>
+        </select>
+      </div>
+
+      <button class="btn btn-success btn-large" id="btnCompleteSale">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="22" height="22"><path d="M20 6L9 17l-5-5"/></svg>
+        FINALIZAR VENDA
+      </button>
+
+      <button class="btn btn-danger btn-large" id="btnCancelSale">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="20" height="20"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        CANCELAR
+      </button>
+
+      <div class="sale-info">
+        <span>Venda Nº</span>
+        <span id="saleNumber">—</span>
+      </div>
+    </section>
+  </main>
+
+  <!-- Toast / notifications -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Loading overlay -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="spinner"></div>
+  </div>
+
+  <script src="script/script.js"></script>
+</body>
+</html>
