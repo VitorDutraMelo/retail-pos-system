@@ -1,13 +1,15 @@
-import express from 'express';
-import cors from 'cors';
+{
+  "compilerOptions": {
+    "target": "ES2019",
+    "module": "CommonJS",
 
-const app = express();
+    "rootDir": "./src",
+    "outDir": "./dist",
 
-app.use(cors());
-app.use(express.json());
+    "esModuleInterop": true,
+    "strict": true,
 
-app.get('/', (req, res) => {
-  res.send('API running...');
-});
-
-export default app;
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  }
+}
