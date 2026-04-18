@@ -5,6 +5,14 @@ import { generateToken } from '../utils/jwt';
 const prisma = new PrismaClient();
 
 export const register = async (name: string, email: string, password: string) => {
+  const existingUser = await prisma.user.findUnique({
+    where: { email },
+  });
+
+  if (existingUser) {
+    throw new Error('Email already exists');
+  }
+
   const hashedPassword = await bcrypt.hash(password, 10);
 
   const user = await prisma.user.create({
